@@ -2,7 +2,7 @@
 // license: https://github.com/golang/appengine/blob/master/LICENSE
 
 syntax = "proto2";
-option go_package = "github.com/neelance/firestore-backup-reader/internal/datastore";
+option go_package = "github.com/neelance/firestore-export-reader/internal/datastore";
 
 package appengine;
 

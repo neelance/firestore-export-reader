@@ -12,7 +12,7 @@ import (
 	"sync"
 
 	"cloud.google.com/go/storage"
-	"github.com/neelance/firestore-backup-reader/internal/datastore"
+	"github.com/neelance/firestore-export-reader/internal/datastore"
 	"github.com/syndtr/goleveldb/leveldb/journal"
 	"google.golang.org/api/iterator"
 	"google.golang.org/protobuf/proto"
@@ -20,7 +20,7 @@ import (
 
 func main() {
 	if len(os.Args) != 2 {
-		log.Fatal("usage: firestore-backup-reader [bucket]/[path to kind]")
+		log.Fatal("usage: firestore-export-reader [bucket]/[path to kind]")
 	}
 	path := strings.SplitN(os.Args[1], "/", 2)
 

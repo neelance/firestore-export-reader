@@ -1,4 +1,4 @@
-module github.com/neelance/firestore-backup-reader
+module github.com/neelance/firestore-export-reader
 
 go 1.16
 
