@@ -97,7 +97,7 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 
 	if toplevel {
 		w.Write([]byte(`{"key":`))
-		writeString(w, pb.GetKey().GetPath().GetElement()[0].GetName())
+		writeJSON(w, pb.GetKey().GetPath().GetElement()[0].GetName())
 		w.Write([]byte(`,"value":`))
 	}
 
@@ -107,13 +107,16 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 			w.Write([]byte(","))
 		}
 
-		writeString(w, p.GetName())
+		writeJSON(w, p.GetName())
 		w.Write([]byte(":"))
 
-		if p.GetMeaning() == datastore.Property_ENTITY_PROTO {
+		switch p.GetMeaning() {
+		case datastore.Property_ENTITY_PROTO:
 			writeObject(w, []byte(p.GetValue().GetStringValue()), false)
-		} else {
-			writeString(w, p.GetValue().GetStringValue())
+		case datastore.Property_GD_WHEN:
+			writeJSON(w, p.GetValue().GetInt64Value()/1_000_000)
+		default:
+			writeJSON(w, p.GetValue().GetStringValue())
 		}
 	}
 	w.Write([]byte("}"))
@@ -123,8 +126,8 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 	}
 }
 
-func writeString(w io.Writer, s string) {
-	b, err := json.Marshal(s)
+func writeJSON(w io.Writer, v interface{}) {
+	b, err := json.Marshal(v)
 	if err != nil {
 		log.Fatal(err)
 	}
