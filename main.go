@@ -116,7 +116,17 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 		case datastore.Property_GD_WHEN:
 			writeJSON(w, p.GetValue().GetInt64Value()/1_000_000)
 		default:
-			writeJSON(w, p.GetValue().GetStringValue())
+			if p.Value.Int64Value != nil {
+				writeJSON(w, *p.Value.Int64Value)
+			} else if p.Value.BooleanValue != nil {
+				writeJSON(w, *p.Value.BooleanValue)
+			} else if p.Value.StringValue != nil {
+				writeJSON(w, *p.Value.StringValue)
+			} else if p.Value.DoubleValue != nil {
+				writeJSON(w, *p.Value.DoubleValue)
+			} else {
+				w.Write([]byte("null"))
+			}
 		}
 	}
 	w.Write([]byte("}"))
