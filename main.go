@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math"
 	"os"
 	"strings"
 	"sync"
@@ -123,7 +124,11 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 			} else if p.Value.StringValue != nil {
 				writeJSON(w, *p.Value.StringValue)
 			} else if p.Value.DoubleValue != nil {
-				writeJSON(w, *p.Value.DoubleValue)
+				if math.IsNaN(*p.Value.DoubleValue) {
+					w.Write([]byte("null"))
+				} else {
+					writeJSON(w, *p.Value.DoubleValue)
+				}
 			} else {
 				w.Write([]byte("null"))
 			}
