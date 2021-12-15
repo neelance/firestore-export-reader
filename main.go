@@ -98,7 +98,14 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 
 	if toplevel {
 		w.Write([]byte(`{"key":`))
-		writeJSON(w, pb.GetKey().GetPath().GetElement()[0].GetName())
+		key := ""
+		for i, e := range pb.GetKey().GetPath().GetElement() {
+			if i > 0 {
+				key += "/" + e.GetType() + "/"
+			}
+			key += e.GetName()
+		}
+		writeJSON(w, key)
 		w.Write([]byte(`,"value":`))
 	}
 
