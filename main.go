@@ -97,16 +97,21 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 	}
 
 	if toplevel {
-		w.Write([]byte(`{"key":`))
-		key := ""
+		collection := ""
+		id := ""
 		for i, e := range pb.GetKey().GetPath().GetElement() {
 			if i > 0 {
-				key += "/" + e.GetType() + "/"
+				collection += "/" + id + "/"
 			}
-			key += e.GetName()
+			collection += e.GetType()
+			id = e.GetName()
 		}
-		writeJSON(w, key)
-		w.Write([]byte(`,"value":`))
+
+		w.Write([]byte(`{"collection":`))
+		writeJSON(w, collection)
+		w.Write([]byte(`,"id":`))
+		writeJSON(w, id)
+		w.Write([]byte(`,"data":`))
 	}
 
 	w.Write([]byte("{"))
