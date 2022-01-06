@@ -115,13 +115,26 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 	}
 
 	w.Write([]byte("{"))
+	currentMultiple := ""
 	for i, p := range pb.GetRawProperty() {
+		if currentMultiple != "" && p.GetName() != currentMultiple {
+			w.Write([]byte("]"))
+			currentMultiple = ""
+		}
+
 		if i > 0 {
 			w.Write([]byte(","))
 		}
 
-		writeJSON(w, p.GetName())
-		w.Write([]byte(":"))
+		if currentMultiple == "" {
+			writeJSON(w, p.GetName())
+			w.Write([]byte(":"))
+		}
+
+		if p.GetMultiple() && p.GetName() != currentMultiple {
+			w.Write([]byte("["))
+			currentMultiple = p.GetName()
+		}
 
 		switch p.GetMeaning() {
 		case datastore.Property_ENTITY_PROTO:
@@ -145,6 +158,9 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 				w.Write([]byte("null"))
 			}
 		}
+	}
+	if currentMultiple != "" {
+		w.Write([]byte("]"))
 	}
 	w.Write([]byte("}"))
 
