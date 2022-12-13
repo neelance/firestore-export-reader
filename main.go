@@ -140,7 +140,12 @@ func writeObject(w io.Writer, b []byte, toplevel bool) {
 		case datastore.Property_ENTITY_PROTO:
 			writeObject(w, []byte(p.GetValue().GetStringValue()), false)
 		case datastore.Property_GD_WHEN:
-			writeJSON(w, p.GetValue().GetInt64Value()/1_000_000)
+			t := p.GetValue().GetInt64Value()
+			w.Write([]byte(`{"_seconds":`))
+			writeJSON(w, t/1_000_000)
+			w.Write([]byte(`,"_nanoseconds":`))
+			writeJSON(w, (t%1_000_000)*1000)
+			w.Write([]byte("}"))
 		default:
 			if p.Value.Int64Value != nil {
 				writeJSON(w, *p.Value.Int64Value)
