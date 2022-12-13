@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"log"
 	"math"
 	"os"
@@ -79,7 +78,7 @@ func processOutputFile(ctx context.Context, obj *storage.ObjectHandle) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		b, err := ioutil.ReadAll(j)
+		b, err := io.ReadAll(j)
 		if err != nil {
 			log.Fatal(err)
 		}
